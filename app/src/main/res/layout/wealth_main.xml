@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:fillViewport="true">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:id="@+id/month_spinner"
+        />
+
+    <Spinner
+        android:layout_weight="1"
+        android:id="@+id/year_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+
+        android:text="OK"
+        android:id="@+id/find"
+        />
+
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Target"
+            android:layout_weight="2"/>
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/credit_input"
+            android:hint="Enter"
+
+            android:layout_weight="2"/>
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="set"
+            android:imeOptions="actionGo"
+            android:id="@+id/set"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Target"
+        android:textSize="30dp"
+        android:textColor="#000"
+        android:layout_gravity="center"
+        android:id="@+id/target_of_month"/>
+
+    <RelativeLayout
+        android:layout_width="150dp"
+        android:layout_marginTop="20sp"
+        android:layout_gravity="center"
+        android:layout_height="150dp">
+
+        <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_centerInParent="true"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="100"
+        android:progressDrawable="@drawable/circle_progress_background"
+        />
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_centerInParent="true"
+        android:rotation="-90"
+        android:indeterminate="false"
+        android:id="@+id/progressring"
+        android:progressDrawable="@drawable/circle_progress_foreground"
+        />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Left"
+            android:id="@+id/leftmoney"
+            android:textSize="20sp"
+            />
+    </RelativeLayout>
+
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:id="@+id/graph_frame"
+       />
+
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="+"
+        android:id="@+id/add"/>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/budget_rv"
+        android:layout_width="match_parent"
+        android:layout_height="203dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/total"
+        android:text="total"
+        android:textColor="#000"
+        android:layout_marginRight="110dp"
+        android:layout_gravity="right"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="rc"
+        android:id="@+id/refreshchart"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Debt "
+        android:textSize="20dp"/>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/add_owe"
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:text="add" />
+    </LinearLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/owe_rv"
+        android:layout_width="match_parent"
+        android:layout_height="203dp">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>
+</ScrollView>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:id="@+id/ll"
+    android:layout_width="300dp"
+    android:layout_height="350dp">
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Title goes here..."
+        android:id="@+id/etitle"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:hint="Description.."
+        android:gravity="top"
+        android:id="@+id/edes"
+        />
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/pickcolor"
+            android:layout_width="125dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="#a2a6ea"
+            android:text="Pick color"
+            android:textAllCaps="false" />
+
+        <!--   <ImageView
+        android:layout_width="70dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:id="@+id/fillimage"/>
+-->
+    </RelativeLayout>
+
+    <Button
+        android:layout_marginTop="3dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#a2a6ea"
+        android:text="Save"
+        android:textAllCaps="false"
+        android:id="@+id/save"/>
+
+
+
+</LinearLayout>

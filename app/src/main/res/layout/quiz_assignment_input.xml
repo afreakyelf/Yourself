@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content">
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/spinner_title"
+        android:id="@+id/spinner"/>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/input"
+        android:layout_marginTop="10dp"
+        android:hint="Enter Task"
+        android:imeOptions="actionNext"
+        />
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/subject"
+        android:layout_marginTop="10dp"
+        android:text="Subject"
+        android:imeOptions="actionDone"
+        />
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_timedate">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Submit Date"/>
+        <EditText
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_et"
+            android:hint="Date"
+
+            />
+
+        <ImageButton
+            android:id="@+id/date_pick"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/calender"
+            android:scaleType="fitCenter"/>
+
+        <EditText
+            android:layout_width="70dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_et"
+            android:hint="Time"
+            />
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:id="@+id/time_pick"
+            android:src="@drawable/clock"
+            android:scaleType="fitCenter"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView
+        android:textSize="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Want to set the Reminder ?"/>
+
+    <Switch
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/aswitch"
+        android:layout_gravity="end"
+        android:checked="false"
+        />
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_reminddater"
+      >
+
+        <EditText
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/date_etr"
+            android:hint="Date"
+            android:layout_marginLeft="10dp"
+            />
+
+        <ImageButton
+            android:id="@+id/date_pickr"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:src="@drawable/calender"
+            android:scaleType="fitCenter"/>
+
+        <EditText
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/time_etr"
+            android:hint="Time"
+            />
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:id="@+id/time_pickr"
+            android:src="@drawable/clock"
+            android:scaleType="fitCenter"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/addtask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="10dp"
+            android:text="Add" />
+
+        <Button
+            android:layout_marginLeft="10dp"
+            android:id="@+id/cancel_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:text="Cancel" />
+    </LinearLayout>
+
+</LinearLayout>
