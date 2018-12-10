@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent" android:layout_height="wrap_content">
 
 
@@ -35,14 +36,25 @@
         android:id="@+id/remaining_time"
         android:layout_below="@+id/subject"/>
 
+        <TextView
+            android:id="@+id/favourite"
+            android:text="Add to Fav"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            tools:srcCompat="@android:drawable/star_big_off" />
 
-    <ImageView
+
+        <ImageView
         android:id="@+id/remove"
         android:layout_width="wrap_content"
+            android:layout_below="@id/favourite"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
         app:srcCompat="@android:drawable/ic_menu_delete" />
+
+
+
     </RelativeLayout>
 
     </android.support.v7.widget.CardView>

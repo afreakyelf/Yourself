@@ -16,7 +16,11 @@ public class taskdata {
     private String odate;
     private String ohowmuch;
     private String ophonenumber;
+
+
+
     private String title,description;
+    private String subjectforam;
     private String ndate,nmonth,nyear,nhour,nmin;
     private String ntime;
     private int color;
@@ -193,5 +197,13 @@ public class taskdata {
 
     public void setTaskname(String taskname) {
         this.taskname = taskname;
+    }
+
+    public String getSubjectforam() {
+        return subjectforam;
+    }
+
+    public void setSubjectforam(String subjectforam) {
+        this.subjectforam = subjectforam;
     }
 }

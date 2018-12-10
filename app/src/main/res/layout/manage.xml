@@ -21,4 +21,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Notes" />
+
+    <Button
+        android:id="@+id/health"
+        android:layout_marginTop="50dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Health" />
+
 </LinearLayout>

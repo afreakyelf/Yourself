@@ -56,6 +56,8 @@ public class home extends Fragment {
     private Firebase firebase;
 
     ImageView imageView,delete;
+    TextView a_name,a_date,a_sub;
+    TextView q_name,q_date,q_sub;
     TextView name,email;
     EditText taskinput ;
     Button addtask,cancel;
@@ -91,19 +93,68 @@ public class home extends Fragment {
         Firebase.setAndroidContext(getActivity());
 
 
-        imageView = rootview.findViewById(R.id.profile);
-        name = rootview.findViewById(R.id.name);
-        email = rootview.findViewById(R.id.email);
+        a_date = rootview.findViewById(R.id.ass_date);
+        a_name = rootview.findViewById(R.id.ass_taskname);
+        a_sub = rootview.findViewById(R.id.ass_subject);
+
+        q_date = rootview.findViewById(R.id.qui_date);
+        q_name = rootview.findViewById(R.id.qui_taskname);
+        q_sub = rootview.findViewById(R.id.qui_subject);
+
+
+
 
         mAuth = FirebaseAuth.getInstance();
         final FirebaseUser user = mAuth.getCurrentUser();
-        name.setText(user.getDisplayName());
-
-        Glide.with(this).load(user.getPhotoUrl()).into(imageView);
-        email.setText(user.getEmail());
 
 
-/**/
+        databaseReference = FirebaseDatabase.getInstance().getReference();
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        userid= firebaseAuth.getCurrentUser().getUid();
+
+         DatabaseReference myref2 = FirebaseDatabase.getInstance().getReference("Yourself").child(userid).child("fav").child("Assignment");
+
+        myref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+             String taskname = dataSnapshot.child("taskname").getValue(String.class);
+                String date = dataSnapshot.child("date").getValue(String.class);
+                String subject = dataSnapshot.child("subject").getValue(String.class);
+
+                a_date.setText(date);
+                a_name.setText(taskname);
+                a_sub.setText(subject);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        DatabaseReference myref3 = FirebaseDatabase.getInstance().getReference("Yourself").child(userid).child("fav").child("Quiz");
+
+        myref3.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String taskname = dataSnapshot.child("taskname").getValue(String.class);
+                String date = dataSnapshot.child("date").getValue(String.class);
+                String subject = dataSnapshot.child("subject").getValue(String.class);
+
+                q_date.setText(date);
+                q_name.setText(taskname);
+                q_sub.setText(subject);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
 
         recyclerView =  rootview.findViewById(R.id.rv);
         recyclerViewLayoutManager = new LinearLayoutManager(getActivity());

@@ -11,6 +11,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,8 +20,10 @@ import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,11 +53,14 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import static android.app.DatePickerDialog.*;
+import static com.example.rajat.yourself.wealth.result_credit;
 
 
 @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -62,31 +68,35 @@ import static android.app.DatePickerDialog.*;
 
 public class study extends Fragment implements OnItemSelectedListener {
 
-    RecyclerView rv_assignment,rv_quiz;
+    RecyclerView rv_assignment,rv_quiz,rv_attendance;
     ImageButton date,time,dater,timer;
-    EditText edate,edater,etime,etimer,name,taskinput , subjectinput;
+    EditText edate,edater,etime,etimer,name,taskinput , subjectinput ,subjectinputforam;
     int d,m,y,h,min,s;
+    String subjectforam;
     String finaltime , finaldate , finaltimer , finaldater;
     String task,subject;
     private ArrayList<taskdata> taskdata = new ArrayList<>();
-    Button add,cancel;
-    DatabaseReference databaseReference,myref1,myref2;
+    Button add,cancel,add_subject;
+    DatabaseReference databaseReference,myref1,myref2,myref3;
     String userid;
     Firebase firebase;
     public static String task_type;
     String hou;
     String mi;
     String dd,mm,yyyy;
-    String subjectt,namee;
-    Context mContext;
     private Switch alarm_switch;
+    Button submit_am;
     LinearLayout ll_reminddate;
+
+    String previous_yes,last_total;
+    float ptotal,pyes;
+
 
 
     FloatingActionButton add_assignment,add_quiz;
-    public LinearLayoutManager linearLayoutManager1,linearLayoutManager2;
+    public LinearLayoutManager linearLayoutManager1,linearLayoutManager2,linearLayoutManager3;
     public static FirebaseRecyclerAdapter<taskdata,ShowDataViewHolder> mFirebaseAdapter1,mFirebaseAdapter2;
-
+    public static FirebaseRecyclerAdapter<taskdata,ShowDataViewHolder2>mFirebaseAdapter3;
     public study() {
 
     }
@@ -110,15 +120,76 @@ public class study extends Fragment implements OnItemSelectedListener {
 
         rv_assignment = view.findViewById(R.id.rv_assignments);
         rv_quiz = view.findViewById(R.id.rv_quiz);
+        rv_attendance = view.findViewById(R.id.rv_attendance);
+        add_subject = view.findViewById(R.id.add_sub);
+
         add_assignment = view.findViewById(R.id.add_assignment);
         linearLayoutManager1 = new LinearLayoutManager(getContext());
         linearLayoutManager2 = new LinearLayoutManager(getContext());
+        linearLayoutManager3 = new LinearLayoutManager(getContext());
         rv_assignment.setLayoutManager(linearLayoutManager1);
         rv_quiz.setLayoutManager(linearLayoutManager2);
+        rv_attendance.setLayoutManager(linearLayoutManager3);
 
 
 
 
+
+        add_subject.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final taskdata mlog = new taskdata();
+                final Dialog dialog = new Dialog(getActivity());
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.input_for_subject_am);
+
+                subjectinputforam = dialog.findViewById(R.id.subject);
+                submit_am = dialog.findViewById(R.id.submit);
+
+                submit_am.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        subjectforam = subjectinputforam.getText().toString();
+
+
+                        mlog.setSubjectforam(subjectforam);
+                        taskdata.add(mlog);
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference();
+                        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                        userid = firebaseAuth.getCurrentUser().getUid();
+
+                        firebase = new Firebase("https://yourself-bro.firebaseio.com/").child("Yourself").child(userid).child("Attendance").child(subjectforam);
+
+                        databaseReference.orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final Firebase subject_ref = firebase.child("subjectforam");
+                                final Firebase yes_ref = firebase.child("yes");
+                                final Firebase no_ref = firebase.child("no");
+                                final Firebase total = firebase.child("total");
+                                subject_ref.setValue(subjectforam);
+                                yes_ref.setValue("0");
+                                no_ref.setValue("0");
+                                total.setValue("0");
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        dialog.dismiss();
+
+                    }
+                });
+
+                dialog.show();
+
+            }
+        });
 
         add_assignment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -298,6 +369,9 @@ public class study extends Fragment implements OnItemSelectedListener {
                                 day_ref.setValue(dd);
                                 month_ref.setValue(mm);
                                 year_ref.setValue(yyyy);
+
+
+
                             }
 
                             @Override
@@ -375,12 +449,41 @@ public class study extends Fragment implements OnItemSelectedListener {
         this.mFirebaseAdapter2 = mFirebaseAdapter;
     }
 
+    public FirebaseRecyclerAdapter<taskdata, ShowDataViewHolder2> getmFirebaseAdapter3() {
+        return mFirebaseAdapter3;
+    }
+
+    public void setmFirebaseAdapter3(FirebaseRecyclerAdapter<taskdata, ShowDataViewHolder2> mFirebaseAdapter) {
+        this.mFirebaseAdapter3 = mFirebaseAdapter;
+    }
+
+
+
+    //View Holder For Recycler View
+    public static class ShowDataViewHolder2 extends RecyclerView.ViewHolder {
+        private final TextView subjectname,percentage;
+        private final Button yes,no;
+        private final CardView subjectCv;
+
+
+        public ShowDataViewHolder2(final View itemView)
+        {
+            super(itemView);
+            subjectname = itemView.findViewById(R.id.subject);
+            yes = itemView.findViewById(R.id.yesforam);
+            no = itemView.findViewById(R.id.noforam);
+            percentage = itemView.findViewById(R.id.percentage);
+            subjectCv =  itemView.findViewById(R.id.subject_cv);
+        }
+
+    }
+
 
 
     //View Holder For Recycler View
     public static class ShowDataViewHolder extends RecyclerView.ViewHolder {
         private final TextView image_title;
-        private TextView time_left,subject;
+        private TextView time_left,subject,fav;
         private ImageView delete;
 
 
@@ -391,6 +494,7 @@ public class study extends Fragment implements OnItemSelectedListener {
             image_title = itemView.findViewById(R.id.taskname);
             delete = itemView.findViewById(R.id.remove);
             subject = itemView.findViewById(R.id.subject);
+            fav = itemView.findViewById(R.id.favourite);
 
         }
 
@@ -406,6 +510,7 @@ public class study extends Fragment implements OnItemSelectedListener {
 
         myref1 = FirebaseDatabase.getInstance().getReference("Yourself").child(userod).child("Assignment");
         myref2 = FirebaseDatabase.getInstance().getReference("Yourself").child(userod).child("Quiz");
+        myref3 = FirebaseDatabase.getInstance().getReference("Yourself").child(userod).child("Attendance");
 
 
         setmFirebaseAdapter1(new FirebaseRecyclerAdapter<taskdata, ShowDataViewHolder>(
@@ -455,35 +560,39 @@ public class study extends Fragment implements OnItemSelectedListener {
                     }
                 });
 
-/*                viewHolder.alarm_switch.setChecked(false);
-                viewHolder.alarm_switch.setText("Reminder");
 
-                viewHolder.alarm_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                viewHolder.fav.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    public void onClick(View v) {
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference();
+                        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                        userid = firebaseAuth.getCurrentUser().getUid();
+
+                        firebase = new Firebase("https://yourself-bro.firebaseio.com/").child("Yourself").child(userid).child("fav").child("Assignment");
 
 
+                        databaseReference.orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final Firebase task_ref = firebase.child("taskname");
+                                final Firebase date_ref = firebase.child("date");
+                                final Firebase sub_ref = firebase.child("subject");
 
+                                task_ref.setValue(model.getTaskname());
+                                date_ref.setValue(model.getDate()+" "+model.getTime());
+                                sub_ref.setValue(model.getSubject());
 
-                        if(isChecked){
-                            namee= getmFirebaseAdapter1().getRef(position).child(model.getTaskname()).getKey();
-                            hou= getmFirebaseAdapter1().getRef(position).child(model.getHour()).getKey();
-                            subjectt= getmFirebaseAdapter1().getRef(position).child(model.getSubject()).getKey();
-                            mi = getmFirebaseAdapter1().getRef(position).child(model.getMinute()).getKey();
+                                }
 
-                            Toast.makeText(getContext(), "Reminder On", Toast.LENGTH_SHORT).show();
-                            set_alarm_time(hou,mi,subjectt,namee + " Submission");
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }else {
-                            Toast.makeText(getContext(), "Reminder off", Toast.LENGTH_SHORT).show();
-                            Intent n_intent = new Intent(getContext(),AlarmReceiver.class);
-                            PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getContext(),0,n_intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                            AlarmManager alarmManager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
-                            alarmManager.cancel(pendingIntent1);
-                        }
-
+                            }
+                        });
                     }
-                });*/
+                });
+
 
             }
 
@@ -536,38 +645,138 @@ public class study extends Fragment implements OnItemSelectedListener {
                 });
 
 
-
-/*
-
-                viewHolder.alarm_switch.setChecked(false);
-                viewHolder.alarm_switch.setText("Reminder");
-
-                viewHolder.alarm_switch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                viewHolder.fav.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    public void onClick(View v) {
+
+                        databaseReference = FirebaseDatabase.getInstance().getReference();
+                        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                        userid = firebaseAuth.getCurrentUser().getUid();
+
+                        firebase = new Firebase("https://yourself-bro.firebaseio.com/").child("Yourself").child(userid).child("fav").child("Quiz");
 
 
-                        if(isChecked){
-                            namee= getmFirebaseAdapter2().getRef(position).child(model.getTaskname()).getKey();
-                            hou= getmFirebaseAdapter2().getRef(position).child(model.getHour()).getKey();
-                            subjectt= getmFirebaseAdapter2().getRef(position).child(model.getSubject()).getKey();
-                            mi = getmFirebaseAdapter2().getRef(position).child(model.getMinute()).getKey();
+                        databaseReference.orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final Firebase task_ref = firebase.child("taskname");
+                                final Firebase date_ref = firebase.child("date");
+                                final Firebase sub_ref = firebase.child("subject");
 
-                            Toast.makeText(getContext(), "Alarm set", Toast.LENGTH_SHORT).show();
-                            set_alarm_time(dd, mm, yyyy, finaltime, finaldate, hou,mi,subjectt,namee);
+                                task_ref.setValue(model.getTaskname());
+                                date_ref.setValue(model.getDate()+" "+model.getTime());
+                                sub_ref.setValue(model.getSubject());
 
-                        }else {
-                            Toast.makeText(getContext(), "Alarm Off ", Toast.LENGTH_SHORT).show();
-                            Intent n_intent = new Intent(getContext(),AlarmReceiver.class);
-                            PendingIntent pendingIntent1 = PendingIntent.getBroadcast(getContext(),0,n_intent,PendingIntent.FLAG_UPDATE_CURRENT);
-                            AlarmManager alarmManager = (AlarmManager)getContext().getSystemService(Context.ALARM_SERVICE);
-                            alarmManager.cancel(pendingIntent1);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                    }
+                });
+
+
+
+
+            }
+
+        });
+
+        setmFirebaseAdapter3(new FirebaseRecyclerAdapter<taskdata, ShowDataViewHolder2>(
+                taskdata.class, R.layout.subject_foram, ShowDataViewHolder2.class, myref3.orderByPriority()) {
+            public void populateViewHolder(final ShowDataViewHolder2 viewHolder, final taskdata model, final int position) {
+                viewHolder.subjectname.setText(model.getSubjectforam());
+
+
+                databaseReference = FirebaseDatabase.getInstance().getReference();
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                userid = firebaseAuth.getCurrentUser().getUid();
+
+
+                DatabaseReference myref2 = FirebaseDatabase.getInstance().getReference("Yourself").child(userid).child("Attendance").child(model.getSubjectforam());
+                myref2.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        previous_yes = dataSnapshot.child("yes").getValue(String.class);
+                        last_total = dataSnapshot.child("total").getValue(String.class);
+
+                        if(last_total!=null || previous_yes!=null) {
+                            ptotal = Float.parseFloat(last_total);
+                            pyes = Float.parseFloat(previous_yes);
                         }
+                        if(pyes==0 && ptotal==0){
+                            viewHolder.percentage.setText("0%");
+                        }else {
+
+                            Float d =  ((pyes * 100) / ptotal);
+                            if(d<75.0){
+                                viewHolder.subjectCv.setCardBackgroundColor(Color.rgb(255,30,0));
+                            }else {
+                                viewHolder.subjectCv.setCardBackgroundColor(Color.WHITE);
+                            }
+
+                            viewHolder.percentage.setText(String.format("%.2f",d)+"%");
+                        }
+
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
                     }
                 });
-*/
 
+
+
+                viewHolder.yes.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        firebase = new Firebase("https://yourself-bro.firebaseio.com/").child("Yourself").child(userid).child("Attendance").child(model.getSubjectforam());
+                        databaseReference.orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final Firebase yes_ref = firebase.child("yes");
+                                final Firebase total = firebase.child("total");
+                                yes_ref.setValue(String.valueOf(pyes+1));
+                                total.setValue(String.valueOf(ptotal+1));
+                                rv_attendance.invalidate();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                });
+
+                viewHolder.no.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        firebase = new Firebase("https://yourself-bro.firebaseio.com/").child("Yourself").child(userid).child("Attendance").child(model.getSubjectforam());
+                        databaseReference.orderByValue().addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                final Firebase total = firebase.child("total");
+                                total.setValue(String.valueOf(ptotal+1));
+                                rv_attendance.invalidate();
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                });
 
 
             }
@@ -577,6 +786,7 @@ public class study extends Fragment implements OnItemSelectedListener {
 
             rv_assignment.setAdapter(getmFirebaseAdapter1());
             rv_quiz.setAdapter(getmFirebaseAdapter2());
+            rv_attendance.setAdapter(getmFirebaseAdapter3());
 
 
 
@@ -614,8 +824,27 @@ public class study extends Fragment implements OnItemSelectedListener {
             }
         });
 
+        myref3.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if(dataSnapshot.getValue() == null){
+                    Toast.makeText(getContext(),"No Subjects added yet!",Toast.LENGTH_SHORT).show();
+                }else {
+                    mFirebaseAdapter3.notifyItemChanged(0);
+                    mFirebaseAdapter3.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
         mFirebaseAdapter1.notifyItemInserted(taskdata.size()-1);
         mFirebaseAdapter2.notifyItemInserted(taskdata.size()-1);
+        mFirebaseAdapter3.notifyItemInserted(taskdata.size()-1);
 
     }
 

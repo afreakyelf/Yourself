@@ -44,7 +44,6 @@ public class login extends Activity {
         googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
                 .addApi(Auth.GOOGLE_SIGN_IN_API,googleSignInOptions)
                 .build();
-        Log.d("Api client","Api client loaded in onStart");
 
         googleApiClient.connect();
         mAuth = FirebaseAuth.getInstance();
@@ -92,8 +91,8 @@ public class login extends Activity {
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if(task.isSuccessful()) {
                                     FirebaseUser user = mAuth.getCurrentUser();
-
                                     startActivity(new Intent(login.this,MainActivity.class));
+                                    finish();
                                 }
                             }
                         });

@@ -20,7 +20,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 public class manage extends Fragment{
 
-   Button study,wealth,notes;
+   Button study,wealth,notes,health;
 
     public manage() {
         // Required empty public constructor
@@ -73,6 +73,20 @@ public class manage extends Fragment{
             @Override
             public void onClick(View v) {
                 Fragment fragment = new notes();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.content,fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+
+            }
+        });
+
+        health = rootview.findViewById(R.id.health);
+        health.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new health();
                 FragmentManager fm = getFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
                 ft.replace(R.id.content,fragment);
