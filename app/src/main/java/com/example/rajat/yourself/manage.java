@@ -8,6 +8,7 @@ import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,7 @@ import com.firebase.ui.database.FirebaseRecyclerAdapter;
 
 public class manage extends Fragment{
 
-   Button study,wealth,notes,health;
+   CardView study,wealth,notes,health;
 
     public manage() {
         // Required empty public constructor

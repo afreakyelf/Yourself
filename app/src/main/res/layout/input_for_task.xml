@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
+    android:padding="10dp"
     android:layout_width="300dp"
     android:layout_height="wrap_content">
 
@@ -9,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/input"
+        android:gravity="center"
         android:layout_marginTop="10dp"
         android:hint="Enter Task"
         android:imeOptions="actionDone"
@@ -17,24 +19,29 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
+
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/addtask"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:layout_marginRight="2dp"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="10dp"
-            android:text="Add" />
+            android:text="Add"
+            android:textColor="#fff"
+            android:background="#ff7d7d"
+            android:layout_marginLeft="10dp"/>
 
         <Button
-            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:id="@+id/cancel_action"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
+            android:textColor="#fff"
+            android:background="#ff7d7d"
+            android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="10dp"
             android:text="Cancel" />
     </LinearLayout>
 

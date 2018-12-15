@@ -32,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
@@ -58,8 +59,8 @@ public class wealth extends Fragment {
 
     Spinner month, year;
     String month_output_from_spinner, year_output_from_spinner;
-    String[] month_for_spinner = {"Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-    String[] year_for_spinner = {"Year", "18", "19"};
+   static String[] month_for_spinner = {"Month", "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
+    String[] year_for_spinner = {"Year", "2018", "2019"};
     EditText credit_input, ireason, ihoumuch;
     public String fixed_credit, userid;
     String phonenumber = "Not Available";
@@ -69,7 +70,9 @@ public class wealth extends Fragment {
     EditText oname;
     EditText ohowmuch;
     int d, m, y,hour,min,sec;
-    Button find, add, isubmit, set, idate_pick, rc,itodaypick,add_owe,pickcontact;
+    Button find, add, isubmit, set, rc,itodaypick,add_owe;
+    TextView pickcontact;
+    ImageButton idate_pick;
     RecyclerView rv_table,owe_rv;
     DatabaseReference databaseReference, myref1, myref2;
     public static DatabaseReference retrieceds,retrieceds1;
@@ -107,7 +110,6 @@ public class wealth extends Fragment {
     public View onCreateView(@NonNull final LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.wealth_main, container, false);
         Firebase.setAndroidContext(getContext());
-        final_object = "January_18";
         orderby= "day";
 
         credit_input = view.findViewById(R.id.credit_input);
@@ -119,6 +121,9 @@ public class wealth extends Fragment {
         //linearLayoutManager.setReverseLayout(true);
         rv_table.setLayoutManager(linearLayoutManager);
         leftmoneytv = view.findViewById(R.id.leftmoney);
+
+        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+        userid = firebaseAuth.getCurrentUser().getUid();
 
         add_owe = view.findViewById(R.id.add_owe);
         owe_rv = view.findViewById(R.id.owe_rv);
@@ -134,6 +139,41 @@ public class wealth extends Fragment {
         tom = view.findViewById(R.id.target_of_month);
 
         progressBarring = view.findViewById(R.id.progressring);
+
+
+//for start up*********************************************
+        Calendar calendar = Calendar.getInstance();
+        int cur_month = calendar.get(Calendar.MONTH);
+        final int cur_year = calendar.get(Calendar.YEAR);
+        final String mo = String.valueOf(month_for_spinner[cur_month]);
+        final String current = mo+"_"+String.valueOf(cur_year);
+
+        DatabaseReference myref2 = FirebaseDatabase.getInstance().getReference("Yourself").child(userid).child("Wealth").child(current);
+
+        myref2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String tar = dataSnapshot.child("target").getValue(String.class);
+                list(current,tar);
+                month_output_from_spinner=mo;
+                year_output_from_spinner = String.valueOf(cur_year);
+                final_object = current;
+                setgraph(tar);
+                tom.setText(tar);
+                String leftmoney = dataSnapshot.child("left").getValue(String.class);
+                if(leftmoney!=null) {
+                    int lm = Integer.parseInt(leftmoney);
+                    int rc = Integer.parseInt(tar);
+                    float progress = 100-(float)lm/rc * 100;
+                    leftmoneytv.setText(leftmoney);
+                    progressBarring.setProgress((int) progress);
+                }
+            }
+
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
         month = view.findViewById(R.id.month_spinner);
@@ -166,7 +206,7 @@ public class wealth extends Fragment {
 
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
-                final_object = "January_18";
+                final_object = current;
                 list(final_object, result_credit);
             }
         });
@@ -205,6 +245,10 @@ public class wealth extends Fragment {
                     public void onCancelled(DatabaseError databaseError) {
 
                     }
+
+
+
+
                 });
 
             }
@@ -219,8 +263,7 @@ public class wealth extends Fragment {
         });
 
         set = view.findViewById(R.id.set);
-        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-        userid = firebaseAuth.getCurrentUser().getUid();
+
        // fixed_credit = "0";
         set.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -495,7 +538,7 @@ public class wealth extends Fragment {
                             @Override
                             public void onDateSet(DatePicker view, int year, int month, int date) {
                                 int finalm = month + 1;
-                                idate.setText(date + "-" + finalm + "-" + year);
+                                reminddate.setText(date + "-" + finalm + "-" + year);
                                 ordate = String.valueOf(date);
                                 ormonth = String.valueOf(finalm);
                                 oryear = String.valueOf(year);

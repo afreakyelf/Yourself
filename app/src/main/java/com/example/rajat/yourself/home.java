@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -49,6 +50,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import static com.example.rajat.yourself.login.googleApiClient;
+import static com.example.rajat.yourself.wealth.month_for_spinner;
 
 public class home extends Fragment {
 
@@ -58,7 +60,9 @@ public class home extends Fragment {
     ImageView imageView,delete;
     TextView a_name,a_date,a_sub;
     TextView q_name,q_date,q_sub;
+    TextView w_hm,w_percentage;
     TextView name,email;
+    CardView cv1,cv2,cv3;
     EditText taskinput ;
     Button addtask,cancel;
     String taskoutput;
@@ -101,7 +105,48 @@ public class home extends Fragment {
         q_name = rootview.findViewById(R.id.qui_taskname);
         q_sub = rootview.findViewById(R.id.qui_subject);
 
+        w_hm = rootview.findViewById(R.id.w_howmuch);
+        w_percentage = rootview.findViewById(R.id.w_percent);
 
+        cv1 = rootview.findViewById(R.id.cv1);
+        cv2 = rootview.findViewById(R.id.cv2);
+        cv3 = rootview.findViewById(R.id.cv3);
+
+        cv1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new study();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.content,fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
+
+        cv2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new study();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.content,fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
+
+        cv3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Fragment fragment = new wealth();
+                FragmentManager fm = getFragmentManager();
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.content,fragment);
+                ft.addToBackStack(null);
+                ft.commit();
+            }
+        });
 
 
         mAuth = FirebaseAuth.getInstance();
@@ -146,6 +191,35 @@ public class home extends Fragment {
                 q_name.setText(taskname);
                 q_sub.setText(subject);
 
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        Calendar calendar = Calendar.getInstance();
+        int cur_month = calendar.get(Calendar.MONTH);
+        int cur_year = calendar.get(Calendar.YEAR);
+        String mo = String.valueOf(month_for_spinner[cur_month]);
+        String current = mo+"_"+String.valueOf(cur_year);
+
+
+        DatabaseReference myref4 = FirebaseDatabase.getInstance().getReference("Yourself").child(userid).child("Wealth").child(current);
+        myref4.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                String total = dataSnapshot.child("total").getValue(String.class);
+                String target = dataSnapshot.child("target").getValue(String.class);
+                int tar = Integer.parseInt(target);
+                int tot = Integer.parseInt(total);
+
+                int remain  = tot*100/tar;
+
+                w_percentage.setText("You have spent "+String.valueOf(remain)+"% of total this month");
+                w_hm.setText(total);
             }
 
             @Override
